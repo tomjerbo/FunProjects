@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "xZnBV3L/BF74pWagbT9VuA1TWuRliOV7qCpwwC+zIvi7eYO1Ylc9bu5KTLb/Ebp1QxFKo+WnRPBBeYWt0CxFUw==",
+  "dgSpecHash": "+yxfH0SBjhI=",
   "success": true,
   "projectFilePath": "C:\\Users\\Jerbo\\Desktop\\Git_Projects\\FunProjects\\FunProjects.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Jerbo\\.nuget\\packages\\raylib-cs\\7.0.2\\raylib-cs.7.0.2.nupkg.sha512"
+  ],
   "logs": []
 }

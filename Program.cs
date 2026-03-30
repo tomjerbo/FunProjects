@@ -157,11 +157,15 @@ public class Program {
     static int idx_draw_texture = 1;
     static Color base_color = Color.White;
 
+    static string GetProjectPath(string relative_path) {
+	    return Path.Combine(Directory.GetCurrentDirectory(), relative_path);
+    }
+
     static void Main(string[] args) {
         Raylib.InitWindow(screen_width, screen_height, "Fuck poop");
         const int resolution = 1024;
 
-        var color_wheel_image = Raylib.LoadImage(@"C:\Users\tomje\Desktop\FunProjects\colorwheel.png");
+        var color_wheel_image = Raylib.LoadImage(GetProjectPath($@"assets{Path.DirectorySeparatorChar}colorwheel.png"));
         var draw_image = Raylib.GenImageColor(resolution, resolution, base_color);
         var layer_image = Raylib.GenImageColor(resolution, resolution, new Color(0,0,0,0));
 
@@ -188,6 +192,8 @@ public class Program {
                     drawables[i].draw_texture();
                 }
             }
+            
+            Raylib.DrawText(Directory.GetCurrentDirectory(), 200, 12, 24, Color.Magenta);
             
             Raylib.DrawText($"Brush Size: {brush_data.brush_size}", 8, 8, 42, Color.DarkGreen);
             Raylib.DrawText($"Brush Opacity: {brush_data.color.A / 255.0f:F2}", 8, 42, 42, Color.DarkGreen);
