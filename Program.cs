@@ -193,7 +193,6 @@ public class Program {
                 }
             }
             
-            Raylib.DrawText(Directory.GetCurrentDirectory(), 200, 12, 24, Color.Magenta);
             
             Raylib.DrawText($"Brush Size: {brush_data.brush_size}", 8, 8, 42, Color.DarkGreen);
             Raylib.DrawText($"Brush Opacity: {brush_data.color.A / 255.0f:F2}", 8, 42, 42, Color.DarkGreen);
