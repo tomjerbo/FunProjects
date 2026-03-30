@@ -8,7 +8,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9ff3b2c4-c576-44d8-bbb4-11f38eaf6b26" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.FunProjects.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FunProjects.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.exe" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/apphost.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/ref/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/ref/FunProjects.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/refint/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/refint/FunProjects.dll" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +111,7 @@
       <workItem from="1774704343248" duration="16501000" />
       <workItem from="1774727122953" duration="4956000" />
       <workItem from="1774854769260" duration="957000" />
-      <workItem from="1774881626925" duration="1268000" />
+      <workItem from="1774881626925" duration="2200000" />
     </task>
     <servers />
   </component>

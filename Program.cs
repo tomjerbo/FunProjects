@@ -150,8 +150,8 @@ public enum brush_types {
 
 
 public class Program {
-    public static int screen_width = 1240;
-    public static int screen_height = 1240;
+    public static int screen_width = 800;
+    public static int screen_height = 800;
     static DrawableTexture[] drawables = new DrawableTexture[7];
     static int idx_color_wheel = 0;
     static int idx_draw_texture = 1;
@@ -163,7 +163,7 @@ public class Program {
 
     static void Main(string[] args) {
         Raylib.InitWindow(screen_width, screen_height, "Fuck poop");
-        const int resolution = 1024;
+        const int resolution = 512;
 
         var color_wheel_image = Raylib.LoadImage(GetProjectPath($@"assets{Path.DirectorySeparatorChar}colorwheel.png"));
         var draw_image = Raylib.GenImageColor(resolution, resolution, base_color);
@@ -171,9 +171,9 @@ public class Program {
 
         bool is_erasing = false;
         drawables[idx_color_wheel] = new DrawableTexture(new Vector2(screen_width / 2, color_wheel_image.Height / 2), color_wheel_image);
-        drawables[idx_draw_texture] = new DrawableTexture(new Vector2(screen_width / 2, screen_height / 2), draw_image);
+        drawables[idx_draw_texture] = new DrawableTexture(new Vector2(screen_width / 2, screen_height - draw_image.Height / 2 - 24), draw_image);
         for (int i = idx_draw_texture + 1; i < drawables.Length; i++) {
-            drawables[i] = new DrawableTexture(new Vector2(screen_width / 2, screen_height / 2), layer_image);
+            drawables[i] = new DrawableTexture(new Vector2(screen_width / 2, screen_height - draw_image.Height / 2 - 24), layer_image);
         }
 
         brush_frame_data brush_data = new brush_frame_data(){
@@ -184,7 +184,7 @@ public class Program {
 
         while (Raylib.WindowShouldClose() == false) {
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.Beige);
+            Raylib.ClearBackground(new Color(0.1f,0.1f,0.1f, 1f));
             
             // Render loop
             for (int i = 0; i < drawables.Length; i++) {
@@ -270,7 +270,7 @@ public class Program {
                 }
             }
             
-            Raylib.DrawFPS(8, 80);
+            Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
         }
     }
