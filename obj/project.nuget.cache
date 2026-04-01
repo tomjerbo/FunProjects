@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "+yxfH0SBjhI=",
+  "dgSpecHash": "gZnkpGkduDA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Jerbo\\Desktop\\Git_Projects\\FunProjects\\FunProjects.csproj",
+  "projectFilePath": "/home/karl/projects/c#/FunProjects/FunProjects.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Jerbo\\.nuget\\packages\\raylib-cs\\7.0.2\\raylib-cs.7.0.2.nupkg.sha512"
+    "/home/karl/.nuget/packages/raylib-cs/7.0.2/raylib-cs.7.0.2.nupkg.sha512",
+    "/home/karl/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.4/microsoft.aspnetcore.app.ref.10.0.4.nupkg.sha512"
   ],
   "logs": []
 }
