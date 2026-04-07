@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Text;
 using Raylib_cs;
+
 
 struct DrawableTexture
 {
@@ -149,45 +153,61 @@ struct DrawableTexture
     }
 }
 
-
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct brush_frame_data
 {
     public Color color;
     public float brush_size;
     public Vector2 mouse_pos;
-    public brush_types brush_type;
     public bool is_painting;
 
-    public string toJson()
-    {
-        var brushData = new
-        {
-            msg = "",
-            apiKey = "1234",
-            brushdata = new
-            {
-                size = brush_size,
-                color = new
-                {
-                    r = color.R,
-                    g = color.G,
-                    b = color.B,
-                    a = color.A
-                }
-            }
-        };
+}
 
-        return System.Text.Json.JsonSerializer.Serialize(brushData);
+public class funky_funcs
+{
+    static public byte[] toByteArray(brush_frame_data structure)
+    {
+        using (var memoryStream = new System.IO.MemoryStream())
+        using (var writer = new System.IO.BinaryWriter(memoryStream))
+        {
+            writer.Write(structure.color.R);
+            writer.Write(structure.color.G);
+            writer.Write(structure.color.B);
+            writer.Write(structure.color.A);
+            writer.Write(structure.brush_size);
+
+            writer.Write(structure.mouse_pos.X);
+            writer.Write(structure.mouse_pos.Y);
+
+            writer.Write(structure.is_painting);
+            return memoryStream.ToArray();
+        }
+    }
+
+    static public brush_frame_data fromByteArray(byte[] byteArray)
+    {
+        using (var memoryStream = new MemoryStream(byteArray))
+        using (var reader = new BinaryReader(memoryStream))
+        {
+            brush_frame_data structure = new brush_frame_data();
+
+            structure.color.R = reader.ReadByte();
+            structure.color.G = reader.ReadByte();
+            structure.color.B = reader.ReadByte();
+            structure.color.A = reader.ReadByte();
+            structure.brush_size = reader.ReadSingle();
+
+            float x = reader.ReadSingle();
+            float y = reader.ReadSingle();
+            structure.mouse_pos = new Vector2(x, y);
+
+            structure.is_painting = reader.ReadBoolean();
+
+            return structure;
+        }
     }
 }
 
-public enum brush_types
-{
-    none,
-    pencil,
-    eraser,
-    fill
-}
 
 
 public class Program
@@ -226,7 +246,6 @@ public class Program
         {
             color = Color.Black,
             brush_size = 4,
-            brush_type = brush_types.pencil
         };
         Networker networker = new Networker();
 
@@ -321,7 +340,7 @@ public class Program
                         drawables[idx_draw_texture].draw_point(brush_data);
                     }
 
-                    networker.write(brush_data.toJson());
+                    networker.WriteAsync(brush_data);
 
                     brush_data.color = col;
 
@@ -341,35 +360,85 @@ public class Program
     }
 }
 
-public class Networker
+
+public class Networker : IDisposable
 {
-    System.Net.Sockets.TcpClient client;
-    public Networker(string server_address = "127.0.0.1", int port = 8080)
+    private readonly TcpClient _client;
+    private readonly NetworkStream _stream;
+    private bool _isRunning;
+    private Task _readTask;
+
+    public Networker(string serverAddress = "127.0.0.1", int port = 8080)
     {
-        client = new System.Net.Sockets.TcpClient(server_address, port);
-        var stream = client.GetStream();
-        if (stream.CanRead == false)
+        _client = new TcpClient(serverAddress, port);
+        _stream = _client.GetStream();
+        if (!_stream.CanRead)
         {
-            Console.WriteLine("Failed to connect to server at " + server_address + ":" + port);
+            Console.WriteLine($"Failed to connect to server at {serverAddress}:{port}");
+            return;
         }
-        else
-        {
-            Console.WriteLine("Connected to server at " + server_address + ":" + port);
-        }
+        Console.WriteLine($"Connected to server at {serverAddress}:{port}");
+        StartListening();
     }
 
-    public void write(string json_data)
+    public void StartListening()
     {
-        var buffer = System.Text.Encoding.UTF8.GetBytes(json_data);
-        client.GetStream().WriteAsync(buffer, 0, buffer.Length);
+        _isRunning = true;
+        _readTask = Task.Run(async () =>
+        {
+            while (_isRunning)
+            {
+                try
+                {
+                    var buffer = new byte[1024];
+                    var bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead == 0)
+                    {
+                        Console.WriteLine("Connection closed by server.");
+                        break;
+                    }
+                    var content = funky_funcs.fromByteArray(buffer);
+                    var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    Console.WriteLine($"Server response: {content.color}");
 
-
-
-        var responseBuffer = new byte[1024];
-        var bytesRead = client.GetStream().Read(responseBuffer, 0, responseBuffer.Length);
-        var response = System.Text.Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
-        Console.WriteLine($"Server response: {response}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error reading from stream: {ex.Message}");
+                    break;
+                }
+            }
+            Console.WriteLine("Finished listening");
+        });
     }
 
+    public async Task WriteAsync(brush_frame_data brush_data)
+    {
+        var buffer = funky_funcs.toByteArray(brush_data);
+
+        var brushData = new
+        {
+            data = buffer,
+            key = "1234"
+        };
+
+        var parsed = System.Text.Json.JsonSerializer.Serialize(brushData);
+        var packet = Encoding.UTF8.GetBytes(parsed);
+        await _stream.WriteAsync(packet, 0, packet.Length);
+    }
+
+    public void StopListening()
+    {
+        Console.WriteLine("Stopped listening");
+        _isRunning = false;
+        _readTask?.Wait();
+    }
+
+    public void Dispose()
+    {
+        Console.WriteLine("Dispose");
+        StopListening();
+        _stream?.Dispose();
+        _client?.Dispose();
+    }
 }
-
