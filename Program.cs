@@ -3,10 +3,11 @@ using System.Net.Sockets;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json.Serialization;
 using Raylib_cs;
 
 
-struct DrawableTexture
+public struct DrawableTexture
 {
 
     Texture2D texture;
@@ -31,10 +32,18 @@ struct DrawableTexture
 
     public void draw_point(brush_frame_data brush)
     {
-        var draw_pos = get_draw_pos(brush.mouse_pos);
-        Raylib.ImageDrawCircleV(ref image, draw_pos, (int)brush.brush_size, brush.color);
+        try
+        {
 
-        should_update_texture = true;
+            var draw_pos = get_draw_pos(brush.mouse_pos);
+            Raylib.ImageDrawCircleV(ref image, draw_pos, (int)brush.brush_size, brush.color);
+
+            should_update_texture = true;
+        }
+        catch (Exception e)
+        {
+            Console.Write($"Draw failed -> {e}");
+        }
     }
 
     public void draw_line(brush_frame_data brush, Vector2 last_mouse_pos)
@@ -247,7 +256,7 @@ public class Program
             color = Color.Black,
             brush_size = 4,
         };
-        Networker networker = new Networker();
+        Networker networker = new Networker(drawables[idx_draw_texture]);
 
         while (Raylib.WindowShouldClose() == false)
         {
@@ -339,7 +348,6 @@ public class Program
                     {
                         drawables[idx_draw_texture].draw_point(brush_data);
                     }
-
                     networker.WriteAsync(brush_data);
 
                     brush_data.color = col;
@@ -354,6 +362,8 @@ public class Program
                 }
             }
 
+            networker.DrawQueue(ref drawables[idx_draw_texture]);
+
             Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
         }
@@ -367,11 +377,13 @@ public class Networker : IDisposable
     private readonly NetworkStream _stream;
     private bool _isRunning;
     private Task _readTask;
+    private Queue<brush_frame_data> draw_queue;
 
-    public Networker(string serverAddress = "127.0.0.1", int port = 8080)
+    public Networker(DrawableTexture texture, string serverAddress = "127.0.0.1", int port = 8080)
     {
         _client = new TcpClient(serverAddress, port);
         _stream = _client.GetStream();
+        draw_queue = new Queue<brush_frame_data>();
         if (!_stream.CanRead)
         {
             Console.WriteLine($"Failed to connect to server at {serverAddress}:{port}");
@@ -390,17 +402,17 @@ public class Networker : IDisposable
             {
                 try
                 {
-                    var buffer = new byte[1024];
-                    var bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
                     if (bytesRead == 0)
                     {
                         Console.WriteLine("Connection closed by server.");
                         break;
                     }
-                    var content = funky_funcs.fromByteArray(buffer);
-                    var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    Console.WriteLine($"Server response: {content.color}");
 
+                    brush_frame_data content = funky_funcs.fromByteArray(buffer.Take(bytesRead).ToArray());
+                    Console.WriteLine($"Server response: {content.color} {content.mouse_pos} {content.brush_size} {content.is_painting}");
+                    draw_queue.Enqueue(content);
                 }
                 catch (Exception ex)
                 {
@@ -416,15 +428,40 @@ public class Networker : IDisposable
     {
         var buffer = funky_funcs.toByteArray(brush_data);
 
-        var brushData = new
+        var brushData = new Packet
         {
-            data = buffer,
-            key = "1234"
+            Data = buffer,
+            Key = "1234"
         };
 
         var parsed = System.Text.Json.JsonSerializer.Serialize(brushData);
         var packet = Encoding.UTF8.GetBytes(parsed);
         await _stream.WriteAsync(packet, 0, packet.Length);
+    }
+
+    public void DrawQueue(ref DrawableTexture texture)
+    {
+        try
+        {
+            var count = draw_queue.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+
+                var d = draw_queue.Dequeue();
+                texture.draw_point(new brush_frame_data
+                {
+                    color = d.color,
+                    mouse_pos = d.mouse_pos,
+                    brush_size = d.brush_size,
+                    is_painting = true,
+                });
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     public void StopListening()
@@ -441,4 +478,12 @@ public class Networker : IDisposable
         _stream?.Dispose();
         _client?.Dispose();
     }
+}
+public class Packet
+{
+    [JsonPropertyName("data")]
+    public required byte[] Data { get; set; }
+
+    [JsonPropertyName("key")]
+    public required string Key { get; set; }
 }
