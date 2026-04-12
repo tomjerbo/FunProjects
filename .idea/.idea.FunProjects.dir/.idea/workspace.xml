@@ -13,14 +13,25 @@
       <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.exe" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.runtimeconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/net10.0/FunProjects.runtimeconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.AssemblyReference.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.CoreCompileInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.FileListAbsolute.txt" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.csproj.FileListAbsolute.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.genruntimeconfig.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.genruntimeconfig.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/FunProjects.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/apphost.exe" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/apphost.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/ref/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/ref/FunProjects.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/net10.0/refint/FunProjects.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/net10.0/refint/FunProjects.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/FunProjects.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/FunProjects.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/FunProjects.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/obj/FunProjects.csproj.nuget.g.props" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,6 +123,8 @@
       <workItem from="1774727122953" duration="4956000" />
       <workItem from="1774854769260" duration="957000" />
       <workItem from="1774881626925" duration="2200000" />
+      <workItem from="1775933687503" duration="634000" />
+      <workItem from="1775934365173" duration="1354000" />
     </task>
     <servers />
   </component>
@@ -121,24 +134,6 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
-          <option name="timeStamp" value="1" />
-        </breakpoint>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
-          <option name="timeStamp" value="2" />
-        </breakpoint>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
-          <option name="timeStamp" value="3" />
-        </breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

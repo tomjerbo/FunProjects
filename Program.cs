@@ -9,7 +9,6 @@ using Raylib_cs;
 
 public struct DrawableTexture
 {
-
     Texture2D texture;
     Image image;
     bool should_update_texture;
@@ -34,7 +33,6 @@ public struct DrawableTexture
     {
         try
         {
-
             var draw_pos = get_draw_pos(brush.mouse_pos);
             Raylib.ImageDrawCircleV(ref image, draw_pos, (int)brush.brush_size, brush.color);
 
@@ -256,7 +254,7 @@ public class Program
             color = Color.Black,
             brush_size = 4,
         };
-        Networker networker = new Networker(drawables[idx_draw_texture]);
+        Networker networker = new Networker();
 
         while (Raylib.WindowShouldClose() == false)
         {
@@ -362,7 +360,7 @@ public class Program
                 }
             }
 
-            //networker.DrawQueue(ref drawables[idx_draw_texture]);
+            // networker.DrawQueue(ref drawables[idx_draw_texture]);
 
             Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
@@ -379,7 +377,7 @@ public class Networker : IDisposable
     private Task _readTask;
     private Queue<brush_frame_data> draw_queue;
 
-    public Networker(DrawableTexture texture, string serverAddress = "127.0.0.1", int port = 8080)
+    public Networker(DrawableTexture texture = default, string serverAddress = "192.168.1.147", int port = 8080)
     {
         _client = new TcpClient(serverAddress, port);
         _stream = _client.GetStream();
@@ -440,8 +438,8 @@ public class Networker : IDisposable
                     }
 
                     brush_frame_data content = funky_funcs.fromByteArray(buffer.Take(bytesRead).ToArray());
-                    Console.WriteLine($"Server draw response: {content.color} {content.mouse_pos} {content.brush_size} {content.is_painting}");
-                    //draw_queue.Enqueue(content);
+                    Console.WriteLine($"Server response: {content.color} {content.mouse_pos} {content.brush_size} {content.is_painting}");
+                    // draw_queue.Enqueue(content);
                 }
                 catch (Exception ex)
                 {
