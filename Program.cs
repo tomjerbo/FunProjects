@@ -362,7 +362,7 @@ public class Program
                 }
             }
 
-            networker.DrawQueue(ref drawables[idx_draw_texture]);
+            //networker.DrawQueue(ref drawables[idx_draw_texture]);
 
             Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
@@ -398,6 +398,35 @@ public class Networker : IDisposable
         _isRunning = true;
         _readTask = Task.Run(async () =>
         {
+            byte[] bytes = Encoding.ASCII.GetBytes("Connected");
+            var brushData = new Packet
+            {
+                Data = bytes,
+                PacketType = 1,
+                Key = "1234"
+            };
+
+            var parsed = System.Text.Json.JsonSerializer.Serialize(brushData);
+            var packet = Encoding.UTF8.GetBytes(parsed);
+            _stream.Write(packet, 0, packet.Length);
+            
+            try
+            {
+                byte[] buffer = new byte[1024];
+                int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                if (bytesRead == 0)
+                {
+                    Console.WriteLine("Connection closed by server.");
+                }
+                var text = System.Text.Encoding.Default.GetString(buffer);
+                Console.WriteLine($"Server base: {text}");
+                //draw_queue.Enqueue(content);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading from stream: {ex.Message}");
+            }
+
             while (_isRunning)
             {
                 try
@@ -411,13 +440,12 @@ public class Networker : IDisposable
                     }
 
                     brush_frame_data content = funky_funcs.fromByteArray(buffer.Take(bytesRead).ToArray());
-                    Console.WriteLine($"Server response: {content.color} {content.mouse_pos} {content.brush_size} {content.is_painting}");
-                    draw_queue.Enqueue(content);
+                    Console.WriteLine($"Server draw response: {content.color} {content.mouse_pos} {content.brush_size} {content.is_painting}");
+                    //draw_queue.Enqueue(content);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error reading from stream: {ex.Message}");
-                    break;
                 }
             }
             Console.WriteLine("Finished listening");
@@ -431,6 +459,7 @@ public class Networker : IDisposable
         var brushData = new Packet
         {
             Data = buffer,
+            PacketType = 0,
             Key = "1234"
         };
 
@@ -483,6 +512,9 @@ public class Packet
 {
     [JsonPropertyName("data")]
     public required byte[] Data { get; set; }
+
+    [JsonPropertyName("packetType")]
+    public required int PacketType { get; set; }
 
     [JsonPropertyName("key")]
     public required string Key { get; set; }
