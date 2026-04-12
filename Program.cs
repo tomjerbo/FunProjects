@@ -213,6 +213,44 @@ public class funky_funcs
             return structure;
         }
     }
+    static public byte[] toByteArray(Packet structure)
+    {
+        using (var memoryStream = new System.IO.MemoryStream())
+        using (var writer = new System.IO.BinaryWriter(memoryStream))
+        {
+            writer.Write(structure.Key);
+            writer.Write(structure.PacketType);
+            writer.Write(structure.Data);
+            return memoryStream.ToArray();
+        }
+    }
+
+    static public Packet packetFromByteArray(byte[] byteArray)
+    {
+        using (var memoryStream = new MemoryStream(byteArray))
+        using (var reader = new BinaryReader(memoryStream))
+        {
+            Packet structure = new Packet();
+            structure.KeySize = reader.ReadUInt16();
+            var keyByteArray = reader.ReadBytes(structure.KeySize);
+            structure.Key = Encoding.UTF8.GetString(keyByteArray);
+
+            structure.PacketType = reader.ReadUInt16();
+
+            List<byte> totalBytes = new List<byte>();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                totalBytes.AddRange(buffer[..bytesRead]); // Add only the bytes read
+            }
+
+            structure.Data = buffer;
+
+            return structure;
+        }
+    }
 }
 
 
@@ -377,7 +415,7 @@ public class Networker : IDisposable
     private Task _readTask;
     private Queue<brush_frame_data> draw_queue;
 
-    public Networker(DrawableTexture texture = default, string serverAddress = "192.168.1.147", int port = 8080)
+    public Networker(DrawableTexture texture = default, string serverAddress = "127.0.0.1", int port = 8080)
     {
         _client = new TcpClient(serverAddress, port);
         _stream = _client.GetStream();
@@ -399,15 +437,15 @@ public class Networker : IDisposable
             byte[] bytes = Encoding.ASCII.GetBytes("Connected");
             var brushData = new Packet
             {
-                Data = bytes,
+                Key = "1234",
                 PacketType = 1,
-                Key = "1234"
+                Data = bytes
             };
 
-            var parsed = System.Text.Json.JsonSerializer.Serialize(brushData);
-            var packet = Encoding.UTF8.GetBytes(parsed);
+
+            var packet = Encoding.UTF8.GetBytes(brushData);
             _stream.Write(packet, 0, packet.Length);
-            
+
             try
             {
                 byte[] buffer = new byte[1024];
@@ -456,9 +494,9 @@ public class Networker : IDisposable
 
         var brushData = new Packet
         {
-            Data = buffer,
+            Key = "1234",
             PacketType = 0,
-            Key = "1234"
+            Data = buffer,
         };
 
         var parsed = System.Text.Json.JsonSerializer.Serialize(brushData);
@@ -508,12 +546,8 @@ public class Networker : IDisposable
 }
 public class Packet
 {
-    [JsonPropertyName("data")]
-    public required byte[] Data { get; set; }
-
-    [JsonPropertyName("packetType")]
-    public required int PacketType { get; set; }
-
-    [JsonPropertyName("key")]
-    public required string Key { get; set; }
+    public UInt16 KeySize { get; set; }
+    public string Key { get; set; }
+    public int PacketType { get; set; }
+    public byte[] Data { get; set; }
 }
