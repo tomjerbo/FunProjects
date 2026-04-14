@@ -216,11 +216,14 @@ public class funky_funcs
     static public byte[] toByteArray(Packet structure)
     {
         using (var memoryStream = new System.IO.MemoryStream())
-        using (var writer = new System.IO.BinaryWriter(memoryStream))
+        using (var writer = new BinaryWriter(memoryStream))
         {
-            writer.Write(structure.Key);
-            writer.Write(structure.PacketType);
+            writer.Write(BitConverter.GetBytes((ushort)structure.PacketType).Reverse().ToArray());
+            byte[] keyBytes = Encoding.BigEndianUnicode.GetBytes(structure.Key);
+            writer.Write(BitConverter.GetBytes((ushort)keyBytes.Length).Reverse().ToArray());
+            writer.Write(keyBytes);
             writer.Write(structure.Data);
+
             return memoryStream.ToArray();
         }
     }
@@ -231,11 +234,11 @@ public class funky_funcs
         using (var reader = new BinaryReader(memoryStream))
         {
             Packet structure = new Packet();
-            structure.KeySize = reader.ReadUInt16();
-            var keyByteArray = reader.ReadBytes(structure.KeySize);
-            structure.Key = Encoding.UTF8.GetString(keyByteArray);
-
             structure.PacketType = reader.ReadUInt16();
+
+            UInt16 keySize = reader.ReadUInt16();
+            structure.Key = Encoding.UTF8.GetString(reader.ReadBytes(keySize));
+
 
             List<byte> totalBytes = new List<byte>();
             byte[] buffer = new byte[1024];
@@ -243,7 +246,7 @@ public class funky_funcs
 
             while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
-                totalBytes.AddRange(buffer[..bytesRead]); // Add only the bytes read
+                totalBytes.AddRange(buffer[..bytesRead]);
             }
 
             structure.Data = buffer;
@@ -434,16 +437,17 @@ public class Networker : IDisposable
         _isRunning = true;
         _readTask = Task.Run(async () =>
         {
-            byte[] bytes = Encoding.ASCII.GetBytes("Connected");
-            var brushData = new Packet
+            byte[] bytes = Encoding.Default.GetBytes("Connected");
+            var handshake = new Packet
             {
-                Key = "1234",
                 PacketType = 1,
-                Data = bytes
+                Key = "1234",
+                Data = bytes,
             };
 
 
-            var packet = Encoding.UTF8.GetBytes(brushData);
+            var packet = funky_funcs.toByteArray(handshake);
+
             _stream.Write(packet, 0, packet.Length);
 
             try
@@ -494,13 +498,12 @@ public class Networker : IDisposable
 
         var brushData = new Packet
         {
-            Key = "1234",
             PacketType = 0,
+            Key = "1234",
             Data = buffer,
         };
 
-        var parsed = System.Text.Json.JsonSerializer.Serialize(brushData);
-        var packet = Encoding.UTF8.GetBytes(parsed);
+        var packet = funky_funcs.toByteArray(brushData);
         await _stream.WriteAsync(packet, 0, packet.Length);
     }
 
@@ -546,8 +549,7 @@ public class Networker : IDisposable
 }
 public class Packet
 {
-    public UInt16 KeySize { get; set; }
+    public UInt16 PacketType { get; set; }
     public string Key { get; set; }
-    public int PacketType { get; set; }
     public byte[] Data { get; set; }
 }
