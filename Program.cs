@@ -167,6 +167,7 @@ public struct brush_frame_data
     public float brush_size;
     public Vector2 mouse_pos;
     public bool is_painting;
+    public List<Vector2> brush_locations;
 
 }
 
@@ -187,6 +188,11 @@ public class funky_funcs
             writer.Write(structure.mouse_pos.Y);
 
             writer.Write(structure.is_painting);
+
+            byte[] keyBytes = Encoding.BigEndianUnicode.GetBytes(structure.brush_locations);
+
+            writer.Write(BitConverter.GetBytes((ushort)keyBytes.Length).Reverse().ToArray());
+            writer.Write(structure.brush_locations);
             return memoryStream.ToArray();
         }
     }
@@ -209,6 +215,15 @@ public class funky_funcs
             structure.mouse_pos = new Vector2(x, y);
 
             structure.is_painting = reader.ReadBoolean();
+
+            UInt16 locationsSize = reader.ReadUInt16();
+            structure.brush_locations = [];
+            for (int i = 0; i < locationsSize; i++)
+            {
+                float ix = reader.ReadSingle();
+                float iy = reader.ReadSingle();
+                structure.brush_locations.Add(new Vector2(ix, iy));
+            }
 
             return structure;
         }
@@ -235,6 +250,7 @@ public class funky_funcs
         {
             Packet structure = new Packet();
             structure.PacketType = reader.ReadUInt16();
+
 
             UInt16 keySize = reader.ReadUInt16();
             structure.Key = Encoding.UTF8.GetString(reader.ReadBytes(keySize));
@@ -296,6 +312,8 @@ public class Program
             brush_size = 4,
         };
         Networker networker = new Networker();
+
+        List<Vector2> brush_locations = [];
 
         while (Raylib.WindowShouldClose() == false)
         {
@@ -363,6 +381,7 @@ public class Program
 
             if (is_mouse_down)
             {
+                brush_locations.Add(brush_data.mouse_pos);
                 if (drawables[idx_color_wheel].within_bounds(brush_data.mouse_pos))
                 {
                     var sample_color = drawables[idx_color_wheel].sample_position_color(brush_data.mouse_pos);
@@ -387,7 +406,6 @@ public class Program
                     {
                         drawables[idx_draw_texture].draw_point(brush_data);
                     }
-                    networker.WriteAsync(brush_data);
 
                     brush_data.color = col;
 
@@ -401,7 +419,13 @@ public class Program
                 }
             }
 
-            // networker.DrawQueue(ref drawables[idx_draw_texture]);
+            if (Raylib.IsMouseButtonReleased(MouseButton.Left))
+            {
+                networker.WriteAsync(brush_data);
+                brush_locations = [];
+            }
+
+            networker.DrawQueue(ref drawables[idx_draw_texture]);
 
             Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
@@ -458,6 +482,7 @@ public class Networker : IDisposable
                 {
                     Console.WriteLine("Connection closed by server.");
                 }
+
                 var text = System.Text.Encoding.Default.GetString(buffer);
                 Console.WriteLine($"Server base: {text}");
                 //draw_queue.Enqueue(content);
@@ -472,21 +497,22 @@ public class Networker : IDisposable
                 try
                 {
                     byte[] buffer = new byte[1024];
-                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    int bytesRead = _stream.Read(buffer, 0, buffer.Length);
                     if (bytesRead == 0)
                     {
                         Console.WriteLine("Connection closed by server.");
                         break;
                     }
 
+
                     brush_frame_data content = funky_funcs.fromByteArray(buffer.Take(bytesRead).ToArray());
-                    Console.WriteLine($"Server response: {content.color} {content.mouse_pos} {content.brush_size} {content.is_painting}");
-                    // draw_queue.Enqueue(content);
+                    draw_queue.Enqueue(content);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error reading from stream: {ex.Message}");
                 }
+                Console.WriteLine("Reached loop end");
             }
             Console.WriteLine("Finished listening");
         });
