@@ -161,14 +161,12 @@ public struct DrawableTexture
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct brush_frame_data
+public struct brush_frame_data // 29 ?
 {
-    public Color color;
-    public float brush_size;
-    public Vector2 mouse_pos;
-    public bool is_painting;
-    public List<Vector2> brush_locations;
-
+    public Color color; // 16
+    public Vector2 mouse_pos; // 8
+    public float brush_size; // 4
+    public bool is_painting; // 1
 }
 
 public class funky_funcs
@@ -233,10 +231,10 @@ public class funky_funcs
         using (var memoryStream = new System.IO.MemoryStream())
         using (var writer = new BinaryWriter(memoryStream))
         {
-            writer.Write(BitConverter.GetBytes((ushort)structure.PacketType).Reverse().ToArray());
-            byte[] keyBytes = Encoding.BigEndianUnicode.GetBytes(structure.Key);
-            writer.Write(BitConverter.GetBytes((ushort)keyBytes.Length).Reverse().ToArray());
-            writer.Write(keyBytes);
+            // writer.Write(BitConverter.GetBytes((ushort)structure.PacketType).Reverse().ToArray());
+            // byte[] keyBytes = Encoding.BigEndianUnicode.GetBytes(structure.Key);
+            // writer.Write(BitConverter.GetBytes((ushort)keyBytes.Length).Reverse().ToArray());
+            // writer.Write(keyBytes);
             writer.Write(structure.Data);
 
             return memoryStream.ToArray();
@@ -249,15 +247,19 @@ public class funky_funcs
         using (var reader = new BinaryReader(memoryStream))
         {
             Packet structure = new Packet();
-            structure.PacketType = reader.ReadUInt16();
+            // structure.PacketType = reader.ReadUInt16();
 
 
-            UInt16 keySize = reader.ReadUInt16();
-            structure.Key = Encoding.UTF8.GetString(reader.ReadBytes(keySize));
+            // UInt16 keySize = reader.ReadUInt16();
+            // structure.Key = Encoding.UTF8.GetString(reader.ReadBytes(keySize));
 
 
             List<byte> totalBytes = new List<byte>();
-            byte[] buffer = new byte[1024];
+            int size = 0;
+            unsafe {
+            size = sizeof(brush_frame_data);
+            }
+            byte[] buffer = new byte[size];
             int bytesRead;
 
             while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
@@ -468,13 +470,13 @@ public class Networker : IDisposable
     public void StartListening()
     {
         _isRunning = true;
-        _readTask = Task.Run(async () =>
-        {
-            byte[] bytes = Encoding.Default.GetBytes("Connected");
+        _readTask = Task.Run(async () => {
+            brush_frame_data data = new brush_frame_data();
+            byte[] bytes = funky_funcs.toByteArray(data);
             var handshake = new Packet
             {
-                PacketType = 1,
-                Key = "1234",
+                // PacketType = 1,
+                // Key = "1234",
                 Data = bytes,
             };
 
@@ -533,13 +535,13 @@ public class Networker : IDisposable
 
         var brushData = new Packet
         {
-            PacketType = 0,
-            Key = "1234",
+            // PacketType = 0,
+            // Key = "1234",
             Data = buffer,
         };
 
         var packet = funky_funcs.toByteArray(brushData);
-        _stream.Write(packet, 0, packet.Length);
+        _stream.WriteAsync(packet, 0, packet.Length);
     }
 
     public void DrawQueue(ref DrawableTexture texture)
@@ -584,7 +586,8 @@ public class Networker : IDisposable
 }
 public class Packet
 {
-    public UInt16 PacketType { get; set; }
-    public string Key { get; set; }
+    // public UInt16 PacketType { get; set; }
+    // public string Key { get; set; }
     public byte[] Data { get; set; }
 }
+
