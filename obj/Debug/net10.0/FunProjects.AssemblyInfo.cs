@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FunProjects")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f1426245550f51feef36300bf6c349b0af333968")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4daf11254e60b79e481c094a4b1b5261e253869")]
 [assembly: System.Reflection.AssemblyProductAttribute("FunProjects")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FunProjects")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

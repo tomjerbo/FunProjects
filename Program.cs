@@ -291,6 +291,10 @@ public class Program
 
     static void Main(string[] args)
     {
+        if (args.Length != 2) {
+            Console.WriteLine("Invalid amount of arguments, input ip and port!");
+            return;
+        }
         Raylib.InitWindow(screen_width, screen_height, "Fuck poop");
         const int resolution = 512;
 
@@ -311,7 +315,10 @@ public class Program
             color = Color.Black,
             brush_size = 4,
         };
-        Networker networker = new Networker();
+        
+        Console.WriteLine(args[0]);
+        Console.WriteLine(args[1]);
+        Networker networker = new Networker(args[0], args[1]);
 
         // List<Vector2> brush_locations = [];
 
@@ -443,9 +450,9 @@ public class Networker : IDisposable
     private Task _readTask;
     private Queue<brush_frame_data> draw_queue;
 
-    public Networker(DrawableTexture texture = default, string serverAddress = "127.0.0.1", int port = 8080)
+    public Networker(string serverAddress, string port)
     {
-        _client = new TcpClient(serverAddress, port);
+        _client = new TcpClient(serverAddress, int.Parse(port));
         _stream = _client.GetStream();
         draw_queue = new Queue<brush_frame_data>();
         if (!_stream.CanRead)
