@@ -415,7 +415,6 @@ public class Program
                     }
 
                     brush_data.color = col;
-                    networker.WriteAsync(brush_data);
 
                 }
             }
@@ -437,6 +436,8 @@ public class Program
 
             Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
+            
+            networker.WriteAsync(brush_data);
         }
     }
 }
@@ -526,7 +527,7 @@ public class Networker : IDisposable
         });
     }
 
-    public async Task WriteAsync(brush_frame_data brush_data)
+    public void WriteAsync(brush_frame_data brush_data)
     {
         var buffer = funky_funcs.toByteArray(brush_data);
 
@@ -538,7 +539,7 @@ public class Networker : IDisposable
         };
 
         var packet = funky_funcs.toByteArray(brushData);
-        await _stream.WriteAsync(packet, 0, packet.Length);
+        _stream.Write(packet, 0, packet.Length);
     }
 
     public void DrawQueue(ref DrawableTexture texture)
