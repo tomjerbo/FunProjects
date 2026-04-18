@@ -415,6 +415,7 @@ public class Program
                     }
 
                     brush_data.color = col;
+                    networker.WriteAsync(brush_data);
 
                 }
             }
@@ -437,7 +438,6 @@ public class Program
             Raylib.DrawFPS(screen_width - 128, 8);
             Raylib.EndDrawing();
             
-            networker.WriteAsync(brush_data);
         }
     }
 }
