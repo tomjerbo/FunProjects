@@ -1,25 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "/home/karl/projects/c#/FunProjects/FunProjects.csproj": {}
+    "C:\\Users\\tomje\\Desktop\\stupid fucking shit\\FunProjects\\FunProjects.csproj": {}
   },
   "projects": {
-    "/home/karl/projects/c#/FunProjects/FunProjects.csproj": {
+    "C:\\Users\\tomje\\Desktop\\stupid fucking shit\\FunProjects\\FunProjects.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/karl/projects/c#/FunProjects/FunProjects.csproj",
+        "projectUniqueName": "C:\\Users\\tomje\\Desktop\\stupid fucking shit\\FunProjects\\FunProjects.csproj",
         "projectName": "FunProjects",
-        "projectPath": "/home/karl/projects/c#/FunProjects/FunProjects.csproj",
-        "packagesPath": "/home/karl/.nuget/packages/",
-        "outputPath": "/home/karl/projects/c#/FunProjects/obj/",
+        "projectPath": "C:\\Users\\tomje\\Desktop\\stupid fucking shit\\FunProjects\\FunProjects.csproj",
+        "packagesPath": "C:\\Users\\tomje\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tomje\\Desktop\\stupid fucking shit\\FunProjects\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/home/karl/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\tomje\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,18 +65,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[10.0.4, 10.0.4]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.104/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

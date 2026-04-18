@@ -189,10 +189,10 @@ public class funky_funcs
 
             writer.Write(structure.is_painting);
 
-            byte[] keyBytes = Encoding.BigEndianUnicode.GetBytes(structure.brush_locations);
-
-            writer.Write(BitConverter.GetBytes((ushort)keyBytes.Length).Reverse().ToArray());
-            writer.Write(structure.brush_locations);
+            // byte[] keyBytes = Encoding.BigEndianUnicode.GetBytes(structure.brush_locations);
+            //
+            // writer.Write(BitConverter.GetBytes((ushort)keyBytes.Length).Reverse().ToArray());
+            // writer.Write(structure.brush_locations);
             return memoryStream.ToArray();
         }
     }
@@ -215,15 +215,15 @@ public class funky_funcs
             structure.mouse_pos = new Vector2(x, y);
 
             structure.is_painting = reader.ReadBoolean();
-
-            UInt16 locationsSize = reader.ReadUInt16();
-            structure.brush_locations = [];
-            for (int i = 0; i < locationsSize; i++)
-            {
-                float ix = reader.ReadSingle();
-                float iy = reader.ReadSingle();
-                structure.brush_locations.Add(new Vector2(ix, iy));
-            }
+            
+            // UInt16 locationsSize = reader.ReadUInt16();
+            // structure.brush_locations = [];
+            // for (int i = 0; i < locationsSize; i++)
+            // {
+            //     float ix = reader.ReadSingle();
+            //     float iy = reader.ReadSingle();
+            //     structure.brush_locations.Add(new Vector2(ix, iy));
+            // }
 
             return structure;
         }
@@ -313,7 +313,7 @@ public class Program
         };
         Networker networker = new Networker();
 
-        List<Vector2> brush_locations = [];
+        // List<Vector2> brush_locations = [];
 
         while (Raylib.WindowShouldClose() == false)
         {
@@ -381,7 +381,7 @@ public class Program
 
             if (is_mouse_down)
             {
-                brush_locations.Add(brush_data.mouse_pos);
+                // brush_locations.Add(brush_data.mouse_pos);
                 if (drawables[idx_color_wheel].within_bounds(brush_data.mouse_pos))
                 {
                     var sample_color = drawables[idx_color_wheel].sample_position_color(brush_data.mouse_pos);
@@ -408,6 +408,7 @@ public class Program
                     }
 
                     brush_data.color = col;
+                    networker.WriteAsync(brush_data);
 
                 }
             }
@@ -421,8 +422,8 @@ public class Program
 
             if (Raylib.IsMouseButtonReleased(MouseButton.Left))
             {
-                networker.WriteAsync(brush_data);
-                brush_locations = [];
+                // networker.WriteAsync(brush_data);
+                // brush_locations = [];
             }
 
             networker.DrawQueue(ref drawables[idx_draw_texture]);
